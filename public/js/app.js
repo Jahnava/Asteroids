@@ -11,7 +11,7 @@ var ship = {
   x: canv.width / 2, //canvas width divided by two
   y: canv.height /2, //canvas height divided by two
   r: SHIP_SIZE /2, //radius- ship size divided by two
-  a: 90 / 180 * Math.PI // angle-convert to radians
+  a: 90 / 180 * Math.PI // angle-convert to radians- if i change the number it changes the direction of the ship
 }
 
 // set up the game loop
@@ -38,9 +38,14 @@ setInterval(update, 1000 / FPS);
       ship.x - ship.r * (Math.cos(ship.a) - Math.sin(ship.a)),
       ship.y + ship.r * (Math.sin(ship.a) + Math.cos(ship.a))
    );
-   ctx.closePath()
+   ctx.closePath();
    ctx.stroke();
      //rotate ship
 
    //move the ship
+
+   //center dot in
+   ctx.fillStyle = 'red'; //dot color
+   ctx.fillRect(ship.x -1, ship.y -1,2, 2); //set location (ship) and demensions (2px by 2px) 
+
  }
