@@ -1,8 +1,8 @@
 // loads every 30 FPS
 const FPS = 30; //frames per second
-const FRICTION = 0.7;
+const FRICTION = 0.7; //friction setting in space (0 = no friction, 1 = lots of friction, keeps the rocket from floaing away off the page)
 const SHIP_SIZE = 30; //ship height set in pixels
-const SHIP_THRUST = 5;
+const SHIP_THRUST = 5; //acceleration of ship
 const TURN_SPEED = 360; //turn speed in degrees per second
 
 // @type {HTMLCanvasElement}
@@ -29,6 +29,7 @@ document.addEventListener('keyup', keyUp); //event listener keyup with function 
 
 // set up the game loop
 setInterval(update, 1000 / FPS);
+
 //setting computer key codes
 function keyDown(ev) {
   switch(ev.keyCode) {
@@ -59,12 +60,21 @@ function keyDown(ev) {
 }
 
  function update() {
+
    //canvas draw space
    ctx.fillStyle = 'black'; // canvas background filled in with black
    ctx.fillRect(0, 0, canv.width, canv.height); // set height and width to the canvas height and width
+
+ //thrust the ship
+   if (ship.thrusting) {
+       ship.thrust.x += SHIP_THRUST * Math.cos(ship.a) / FPS; //divide by frames per second moves ship forward in x or y direstion
+       ship.thrust.y -= SHIP_THRUST * Math.sin(ship.a) /FPS;
+   }
+
    //draw a triangular ship
    ctx.strokeStyle ='white', //ship color
    ctx.lineWidth = SHIP_SIZE / 20; //ship line width divided by 20
+
    //starting ship drawing
    ctx.beginPath();
    ctx.moveTo( //nose of the ship- where we start
@@ -81,12 +91,27 @@ function keyDown(ev) {
    );
    ctx.closePath();
    ctx.stroke();
+
      //rotate ship
      ship.a += ship.rot;
 
    //move the ship
+   ship.x += ship.thrust.x; //keeps moving ship in this direction
+   ship.y += ship.thrust.y; //keep moving ship in this direction
 
-   //center dot in
+   // handle edge of screen
+         if (ship.x < 0 - ship.r) {
+             ship.x = canv.width + ship.r;
+         } else if (ship.x > canv.width + ship.r) {
+             ship.x = 0 - ship.r;
+         }
+         if (ship.y < 0 - ship.r) {
+             ship.y = canv.height + ship.r;
+         } else if (ship.y > canv.height + ship.r) {
+             ship.y = 0 - ship.r;
+         }
+
+   //center dot
    ctx.fillStyle = 'red'; //dot color
    ctx.fillRect(ship.x -1, ship.y -1,2, 2); //set location (ship) and demensions on x and y axis
 
